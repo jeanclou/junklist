@@ -13,6 +13,7 @@ ActiveRecord::Base.establish_connection(
 	:database	=>	'db/development.db'
 )
 
-#CreateTopSites.new()
-CreateExtLinks.new()
+CreateTopSites.new()
+#CreateExtLinks.new()
+
 
