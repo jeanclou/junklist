@@ -22,13 +22,17 @@ class CreateExtLinks
 						print " path=" + uri.path if uri.path != nil
 						print " query=" + uri.query if uri.query != nil
 						puts "\n"
+						# est-ce une url?
 						if uri.scheme != nil
-							ext = ExtLinks.new
-							ext.top_id = top.id
-							ext.host = uri.host
-							ext.path = uri.path
-							ext.scheme = uri.scheme
-							ext.save
+							# is external link?
+							if /#{top.host}/.match(uri.host)
+								ext = ExtLinks.new
+								ext.top_id = top.id
+								ext.host = uri.host
+								ext.path = uri.path
+								ext.scheme = uri.scheme
+								ext.save
+							end
 						end
 					rescue URI::InvalidURIError => e
 						puts "URI " + link + " is considered as invalid"

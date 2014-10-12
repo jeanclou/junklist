@@ -14,6 +14,6 @@ ActiveRecord::Base.establish_connection(
 )
 
 CreateTopSites.new()
-#CreateExtLinks.new()
+CreateExtLinks.new()
 
 

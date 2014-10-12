@@ -2,8 +2,8 @@ require 'open-uri'
 require 'nokogiri'
 require_relative 'topsites.rb'
 
-PAGES = [ "", ";1", ";2", ";3", ";4", ";5", ";6", ";7", ";8", \
-";9", ";10", ";11"]
+PAGES = [ "" ]#, ";1", ";2", ";3", ";4", ";5", ";6", ";7", ";8", \
+#";9", ";10", ";11"]
 BASE_URL="http://www.alexa.com/topsites/countries"
 COUNTRY = "FR"
 
@@ -32,8 +32,13 @@ class CreateTopSites
 			if top.blank?
 				# add entry
 				puts "Add " + url + " in database"
+				uri = URI.parse(url)
 				top = TopSites.new
 				top.url = url
+				top.scheme = uri.scheme
+				top.host = uri.host
+				top.path = uri.path
+				top.query = uri.query
 				# should catch exception
 				top.save
 			else
