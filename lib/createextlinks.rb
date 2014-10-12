@@ -9,23 +9,25 @@ class CreateExtLinks
 	def initialize
 		TopSites.all.each do |top|
 			#url = "https://" +  top.url
-			puts "PARSE " + top.url + " with id=" + top.id.to_s
+			#puts "PARSE " + top.url + " with id=" + top.id.to_s
 			begin
 				page = Nokogiri::HTML(open(top.url))
 				links = page.xpath("//@href")
 				links.each do |link|
 					begin
 						uri = URI.parse(link)
-						puts "LINK " + link
-						print " scheme=" + uri.scheme if uri.scheme != nil
-						print " host=" + uri.host if uri.host != nil
-						print " path=" + uri.path if uri.path != nil
-						print " query=" + uri.query if uri.query != nil
-						puts "\n"
+						#puts "LINK " + link
+						#print " scheme=" + uri.scheme if uri.scheme != nil
+						#print " host=" + uri.host if uri.host != nil
+						#print " path=" + uri.path if uri.path != nil
+						#print " query=" + uri.query if uri.query != nil
+						#puts "\n"
 						# est-ce une url?
 						if uri.scheme != nil
 							# is external link?
-							if /#{top.host}/.match(uri.host)
+							if /#{top.host}/ === uri.host
+								puts "don\'t insert #{link}"
+							else
 								ext = ExtLinks.new
 								ext.top_id = top.id
 								ext.host = uri.host
