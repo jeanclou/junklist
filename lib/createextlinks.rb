@@ -12,7 +12,7 @@ class CreateExtLinks
 			#puts "PARSE " + top.url + " with id=" + top.id.to_s
 			begin
 				page = Nokogiri::HTML(open(top.url))
-				links = page.xpath("//@href")
+				links = page.xpath("//@src")
 				links.each do |link|
 					begin
 						uri = URI.parse(link)
