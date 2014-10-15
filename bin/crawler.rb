@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'active_record'
 require_relative '../lib/createtopsites.rb'
 require_relative '../lib/createextlinks.rb'
@@ -14,6 +16,6 @@ ActiveRecord::Base.establish_connection(
 )
 
 CreateTopSites.new()
-CreateExtLinks.new()
+#CreateExtLinks.new()
 
 

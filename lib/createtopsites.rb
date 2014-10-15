@@ -1,6 +1,9 @@
+require 'socket'
 require 'open-uri'
 require 'nokogiri'
 require_relative 'topsites.rb'
+
+include Socket::Constants
 
 PAGES = [ "" ]#, ";1", ";2", ";3", ";4", ";5", ";6", ";7", ";8", \
 #";9", ";10", ";11"]
@@ -26,7 +29,7 @@ class CreateTopSites
 		table = table.reject { |a| a == "" }
 
 		table.each do |line|
-			url = self.get_protocol(line.downcase) + line.downcase
+			url = self.get_protocol(self.get_domain(line.downcase))
 			# search for entry
 			top = TopSites.where("url = ?", url)
 			if top.blank?
@@ -47,19 +50,35 @@ class CreateTopSites
 		end
 	end
 
-	# Hack up pourri pour contourner les problemes
-	# de redirections et de ports tcp
 	def get_protocol(domain)
-		# should try dns request on www before
-		p = 'https://'
-
 		begin
-			u = open(p + domain)
-			# should close u
+			socket = Socket.new( AF_INET, SOCK_STREAM )
+			sockaddr = Socket.pack_sockaddr_in( 443, domain )
+			socket.connect( sockaddr )
+			socket.close()
+			p = 'https://' + domain
 		rescue Exception => e
-			p = 'http://'
+			begin
+				socket = Socket.new( AF_INET, SOCK_STREAM )
+				sockaddr = Socket.pack_sockaddr_in( 80, domain )
+				socket.connect( sockaddr )
+				socket.close()
+				p = 'http://' + domain
+			rescue Exception => e
+				puts "CRITICAL: can\'t open socket for #{domain}"
+				puts "#{e}"
+			end
 		end
 		return p
+	end
+
+	def get_domain(domain)
+		begin
+			Socket.getaddrinfo(domain, nil)
+		rescue Exception => e
+			return domain
+		end
+		return 'www.' + domain
 	end
 end
 
